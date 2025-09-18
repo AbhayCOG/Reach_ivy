@@ -5,7 +5,12 @@ import json
 
 class StorageService:
     def __init__(self):
-        self.redis_client = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+        # self.redis_client = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+        # Get Redis URL from environment variable, fallback to localhost for local dev
+        redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+        
+        # Use redis.from_url for cleaner parsing of connection strings
+        self.redis_client = redis.from_url(redis_url, decode_responses=True)
 
     def save_answer(self, session_id: str, question: str, answer: str):
         key = f"session:{session_id}"
